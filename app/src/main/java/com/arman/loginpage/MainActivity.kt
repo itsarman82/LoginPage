@@ -3,6 +3,7 @@ package com.arman.loginpage
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,22 +32,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import com.arman.loginpage.application.ApplicationNavHost
 import com.arman.loginpage.ui.theme.LoginPageTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    val viewModel: MainViewModel by viewModels()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+
+
+
             LoginPageTheme {
+                val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
                 Surface {
-                    LoginScreen(
-                        onClickLogin = {
-                        },
-                        onClickSignin = {
-
-                        }
-                    )
+                    ApplicationNavHost(navController = navController)
                 }
             }
         }
@@ -67,77 +74,7 @@ class MainActivity : ComponentActivity() {
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun LoginScreen(onClickLogin: (String) -> Unit, onClickSignin: () -> Unit) {
-    var phoneValue by remember { mutableStateOf(TextFieldValue("")) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Spacer(modifier = Modifier.height(100.dp))
-        Text(
-            text = "لطفا شماره تلفن خود را وارد کنید ",
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 15.sp
-            )
-        )
-
-        Spacer(modifier = Modifier.height(20.dp))
-        Text(
-            text = "برای ورود به اپلیکیشن ابتدا شماره تماس خود را وارد کنید",
-            style = TextStyle(
-                fontSize = 15.sp
-            )
-        )
-
-        Spacer(modifier = Modifier.height(25.dp))
-        OutlinedTextField(
-            modifier = Modifier
-                .fillMaxWidth(0.75f)
-                .padding(15.dp),
-            value = phoneValue,
-            onValueChange = {
-                if (it.text.length < 12) {
-
-                    phoneValue = it
-                }
-            },
-            shape = RoundedCornerShape(20.dp),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
-        )
-
-        Spacer(modifier = Modifier.height((40.dp)))
-        Button(
-            modifier = Modifier.fillMaxWidth(0.25f),
-            shape = RoundedCornerShape(12.dp),
-            onClick = { onClickLogin(phoneValue.text) },
-            elevation = ButtonDefaults.buttonElevation(
-                defaultElevation = 10.dp,
-                pressedElevation = 15.dp,
-                disabledElevation = 0.dp
-            )
-        ) {
-            Text(
-                text = "ورود"
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-        TextButton(onClick = { onClickSignin() }) {
-            Text(
-                text = "عضو نیستید؟ ثبت نام کنید",
-                style = TextStyle(
-                    fontSize = 10.sp
-                )
-            )
-        }
-    }
-}
 
 
 @Composable
